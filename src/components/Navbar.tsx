@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
+import { servicesData } from '../data/servicesData';
 
 const TYPING_TEXT = 'SIMIYU, OPONDO, KIRANGA & COMPANY ADVOCATES';
 
@@ -35,10 +36,13 @@ const Navbar = () => {
     return () => clearInterval(typingInterval);
   }, []);
 
+  const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+
   const navLinks = [
     { href: '#home', label: 'Home' },
     { href: '#about', label: 'About' },
-    { href: '#services', label: 'Services' },
+    { href: '#services', label: 'Services', hasDropdown: true },
     { href: '#team', label: 'Team' },
     { href: '#news', label: 'News' },
     { href: '#contact', label: 'Contact' },
@@ -87,19 +91,62 @@ const Navbar = () => {
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
               {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToSection(link.href);
-                  }}
-                  className={`px-3 py-2 text-sm font-medium transition-colors duration-200 hover:text-blue-400 ${
-                    isScrolled ? 'text-gray-700' : 'text-white'
-                  }`}
-                >
-                  {link.label}
-                </a>
+                link.hasDropdown ? (
+                  <div
+                    key={link.href}
+                    className="relative"
+                    onMouseEnter={() => setServicesDropdownOpen(true)}
+                    onMouseLeave={() => setServicesDropdownOpen(false)}
+                  >
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollToSection(link.href);
+                      }}
+                      className={`px-3 py-2 text-sm font-medium transition-colors duration-200 hover:text-blue-400 flex items-center gap-1 ${
+                        isScrolled ? 'text-gray-700' : 'text-white'
+                      }`}
+                    >
+                      {link.label}
+                      <ChevronDown className="h-4 w-4" />
+                    </button>
+                    {servicesDropdownOpen && (
+                      <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                        {servicesData.map((service) => (
+                          <a
+                            key={service.id}
+                            href={`#${service.id}`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              scrollToSection('#services');
+                              setServicesDropdownOpen(false);
+                            }}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                          >
+                            <div className="flex items-center gap-2">
+                              <service.icon className="h-4 w-4" />
+                              <span>{service.title}</span>
+                            </div>
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection(link.href);
+                    }}
+                    className={`px-3 py-2 text-sm font-medium transition-colors duration-200 hover:text-blue-400 ${
+                      isScrolled ? 'text-gray-700' : 'text-white'
+                    }`}
+                  >
+                    {link.label}
+                  </a>
+                )
               ))}
             </div>
           </div>
@@ -118,20 +165,54 @@ const Navbar = () => {
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden bg-[#f9f7f1]/50 backdrop-blur-md border-t">
+        <div className="md:hidden bg-[#f9f7f1]/95 backdrop-blur-md border-t">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection(link.href);
-                }}
-                className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 w-full"
-              >
-                {link.label}
-              </a>
+              link.hasDropdown ? (
+                <div key={link.href}>
+                  <button
+                    onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
+                    className="flex items-center justify-between w-full px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  >
+                    <span>{link.label}</span>
+                    <ChevronDown className={`h-4 w-4 transition-transform ${mobileServicesOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {mobileServicesOpen && (
+                    <div className="pl-4 space-y-1">
+                      {servicesData.map((service) => (
+                        <a
+                          key={service.id}
+                          href={`#${service.id}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            scrollToSection('#services');
+                            setIsOpen(false);
+                            setMobileServicesOpen(false);
+                          }}
+                          className="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+                        >
+                          <div className="flex items-center gap-2">
+                            <service.icon className="h-4 w-4" />
+                            <span>{service.title}</span>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection(link.href);
+                  }}
+                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 w-full"
+                >
+                  {link.label}
+                </a>
+              )
             ))}
           </div>
         </div>

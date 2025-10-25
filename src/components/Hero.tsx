@@ -1,46 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Phone } from 'lucide-react';
+import { ArrowRight, Phone, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useSwipeable } from 'react-swipeable';
+import image1 from '../assets/WhatsApp Image 2025-10-25 at 03.34.27.jpeg';
+import image2 from '../assets/WhatsApp Image 2025-10-25 at 03.34.28.jpeg';
+import image3 from '../assets/WhatsApp Image 2025-10-25 at 03.34.28 (1).jpeg';
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
     {
-      image:
-        'https://i.postimg.cc/Px2cZQf5/7-X2-A2923-1.jpg',
+      image: image1,
       title: 'YOUR TRUSTED LEGAL PARTNERS',
       description:
         "Providing exceptional legal services with integrity and expertise.",
     },
     {
-      image:
-        'https://i.postimg.cc/d09SPjyj/7-X2-A2913-1.jpg',
+      image: image2,
       title: 'STRENGTH THROUGH COLLABORATION',
       description:
         "Our experienced team delivers comprehensive legal solutions.",
     },
     {
-      image:
-        'https://i.postimg.cc/Wzd9ZRf5/7X2A2982.jpg',
-      title: 'COMPASSIONATE ADVOCACY',
+      image: image3,
+      title: 'PROFESSIONAL EXCELLENCE',
       description:
-        'Professional excellence combined with genuine care for clients.',
-    },
-    {
-      image:
-        'https://images.pexels.com/photos/5668882/pexels-photo-5668882.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop',
-      title: 'JUSTICE FOR EVERYONE',
-      description:
-        'Making quality legal representation accessible to all.',
+        'Expert legal representation with a commitment to justice.',
     },
   ];
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 4000);
+    }, 5000);
     return () => clearInterval(timer);
   }, [slides.length]);
+
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => nextSlide(),
+    onSwipedRight: () => prevSlide(),
+    trackMouse: true
+  });
 
   const scrollToContact = () => {
     const element = document.querySelector('#contact');
@@ -67,7 +67,8 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="relative h-[70vh] sm:h-screen flex items-center justify-center overflow-hidden"
+      className="relative h-screen flex items-center justify-center overflow-hidden"
+      {...swipeHandlers}
     >
       {/* Background Images */}
       {slides.map((slide, index) => (
@@ -77,46 +78,60 @@ const Hero = () => {
             index === currentSlide ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <img
-            src={slide.image}
-            alt={slide.title}
-            className="w-full h-full object-cover object-center max-h-[70vh] sm:max-h-full"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/60"></div>
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+            <img
+              src={slide.image}
+              alt={slide.title}
+              className="w-full h-full object-contain"
+              style={{ maxHeight: '100vh' }}
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/60"></div>
         </div>
       ))}
 
-      {/* Invisible Navigation Buttons (Only top 60%) */}
+      {/* Navigation Arrows */}
       <button
         onClick={prevSlide}
-        className="absolute left-0 top-0 w-1/2 h-[60%] z-20 opacity-0"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/40 backdrop-blur-sm p-3 rounded-full transition-all duration-300 group"
         aria-label="Previous Slide"
-      />
+      >
+        <ChevronLeft className="h-6 w-6 text-white" />
+      </button>
       <button
         onClick={nextSlide}
-        className="absolute right-0 top-0 w-1/2 h-[60%] z-20 opacity-0"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/40 backdrop-blur-sm p-3 rounded-full transition-all duration-300 group"
         aria-label="Next Slide"
-      />
+      >
+        <ChevronRight className="h-6 w-6 text-white" />
+      </button>
 
-        {/* Hero Content */}
-      <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Hero Content */}
+      <div className="relative z-10 text-center max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="animate-fade-in-up">
-          <div className="min-h-[140px] flex flex-col justify-center">
-            <h3 className="text-xl md:text-2xl lg:text-4xl font-bold mb-4 transition-all duration-500 drop-shadow-2xl tracking-wide" 
-                style={{ fontFamily: 'Georgia, serif', color: '#FFFFFF', textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
+          <div className="min-h-[180px] flex flex-col justify-center bg-black/30 backdrop-blur-sm rounded-2xl p-8 mb-8">
+            <h1 className="text-2xl md:text-4xl lg:text-6xl font-bold mb-6 transition-all duration-700 tracking-wide"
+                style={{
+                  fontFamily: 'Georgia, serif',
+                  color: '#FFFFFF',
+                  textShadow: '3px 3px 6px rgba(0,0,0,0.9), 0 0 30px rgba(59, 130, 246, 0.5)'
+                }}>
               {slides[currentSlide].title}
-            </h3>
-            <p className="text-base md:text-lg lg:text-xl text-yellow-200 mb-8 max-w-3xl mx-auto leading-relaxed transition-all duration-500 drop-shadow-xl font-semibold" 
-               style={{ fontFamily: 'system-ui, -apple-system, sans-serif', textShadow: '2px 2px 0px #654321, 3px 3px 6px rgba(0,0,0,0.9)' }}>
+            </h1>
+            <p className="text-lg md:text-xl lg:text-2xl text-blue-100 max-w-3xl mx-auto leading-relaxed transition-all duration-700 font-medium"
+               style={{
+                 fontFamily: 'system-ui, -apple-system, sans-serif',
+                 textShadow: '2px 2px 4px rgba(0,0,0,0.9)'
+               }}>
               {slides[currentSlide].description}
             </p>
           </div>
         </div>
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up-delay">
+        <div className="flex flex-col sm:flex-row gap-5 justify-center items-center animate-fade-in-up-delay">
           <button
             onClick={scrollToContact}
-            className="group btn-primary flex items-center space-x-2 transform hover:scale-105 shadow-lg"
+            className="group bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-semibold flex items-center space-x-2 transform hover:scale-105 transition-all duration-300 shadow-2xl"
           >
             <Phone className="h-5 w-5" />
             <span>Get Legal Consultation</span>
@@ -124,7 +139,7 @@ const Hero = () => {
           </button>
           <button
             onClick={scrollToServices}
-            className="group btn-outline flex items-center space-x-2 transform hover:scale-105 shadow-lg"
+            className="group bg-white/10 hover:bg-white/20 backdrop-blur-md border-2 border-white text-white px-8 py-4 rounded-full font-semibold flex items-center space-x-2 transform hover:scale-105 transition-all duration-300 shadow-2xl"
           >
             <span>Our Services</span>
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -133,13 +148,15 @@ const Hero = () => {
       </div>
 
       {/* Slide Indicators */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex space-x-2">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex space-x-3">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              index === currentSlide ? 'bg-white' : 'bg-white/50'
+            className={`transition-all duration-300 rounded-full ${
+              index === currentSlide
+                ? 'bg-white w-12 h-3'
+                : 'bg-white/50 hover:bg-white/70 w-3 h-3'
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />
