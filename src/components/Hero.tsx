@@ -14,21 +14,18 @@ const Hero = () => {
       title: 'YOUR TRUSTED LEGAL PARTNERS',
       description:
         "Providing exceptional legal services with integrity and expertise.",
-      objectPosition: 'center 40%'
     },
     {
       image: image2,
       title: 'STRENGTH THROUGH COLLABORATION',
       description:
         "Our experienced team delivers comprehensive legal solutions.",
-      objectPosition: 'center center'
     },
     {
       image: image3,
       title: 'PROFESSIONAL EXCELLENCE',
       description:
         'Expert legal representation with a commitment to justice.',
-      objectPosition: 'center 45%'
     },
   ];
 
@@ -84,8 +81,7 @@ const Hero = () => {
           <img
             src={slide.image}
             alt={slide.title}
-            className="w-full h-full object-cover"
-            style={{ objectPosition: slide.objectPosition }}
+            className="w-full h-full object-cover object-[center_25%] md:object-[center_30%]"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60"></div>
         </div>
