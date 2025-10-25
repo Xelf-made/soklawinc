@@ -78,15 +78,12 @@ const Hero = () => {
             index === currentSlide ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-            <img
-              src={slide.image}
-              alt={slide.title}
-              className="w-full h-full object-contain"
-              style={{ maxHeight: '100vh' }}
-            />
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/60"></div>
+          <img
+            src={slide.image}
+            alt={slide.title}
+            className="w-full h-full object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60"></div>
         </div>
       ))}
 
