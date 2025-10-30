@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { servicesData } from '../data/servicesData';
+import { consultancyAreas } from '../data/consultancyData';
 
 const TYPING_TEXT = 'SIMIYU, OPONDO, KIRANGA & COMPANY ADVOCATES';
 
@@ -38,11 +39,14 @@ const Navbar = () => {
 
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const [consultancyDropdownOpen, setConsultancyDropdownOpen] = useState(false);
+  const [mobileConsultancyOpen, setMobileConsultancyOpen] = useState(false);
 
   const navLinks = [
     { href: '#home', label: 'Home' },
     { href: '#about', label: 'About' },
-    { href: '#services', label: 'Services', hasDropdown: true },
+    { href: '#services', label: 'Legal Services', hasDropdown: true, type: 'services' },
+    { href: '/consultancy', label: 'Consultancy', hasDropdown: true, type: 'consultancy' },
     { href: '#team', label: 'Team' },
     { href: '#news', label: 'News' },
     { href: '#contact', label: 'Contact' },
@@ -95,13 +99,15 @@ const Navbar = () => {
                   <div
                     key={link.href}
                     className="relative"
-                    onMouseEnter={() => setServicesDropdownOpen(true)}
-                    onMouseLeave={() => setServicesDropdownOpen(false)}
+                    onMouseEnter={() => link.type === 'services' ? setServicesDropdownOpen(true) : setConsultancyDropdownOpen(true)}
+                    onMouseLeave={() => link.type === 'services' ? setServicesDropdownOpen(false) : setConsultancyDropdownOpen(false)}
                   >
                     <button
                       onClick={(e) => {
                         e.preventDefault();
-                        scrollToSection(link.href);
+                        if (link.type === 'services') {
+                          scrollToSection('#services');
+                        }
                       }}
                       className={`px-3 py-2 text-sm font-medium transition-colors duration-200 hover:text-blue-400 flex items-center gap-1 ${
                         isScrolled ? 'text-gray-700' : 'text-white'
@@ -110,7 +116,7 @@ const Navbar = () => {
                       {link.label}
                       <ChevronDown className="h-4 w-4" />
                     </button>
-                    {servicesDropdownOpen && (
+                    {link.type === 'services' && servicesDropdownOpen && (
                       <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
                         {servicesData.map((service) => (
                           <a
@@ -127,6 +133,24 @@ const Navbar = () => {
                               <service.icon className="h-4 w-4" />
                               <span>{service.title}</span>
                             </div>
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                    {link.type === 'consultancy' && consultancyDropdownOpen && (
+                      <div className="absolute top-full left-0 mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                        {consultancyAreas.map((area) => (
+                          <a
+                            key={area.id}
+                            href={`/consultancy/${area.slug}`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              window.location.href = `/consultancy/${area.slug}`;
+                              setConsultancyDropdownOpen(false);
+                            }}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                          >
+                            {area.title}
                           </a>
                         ))}
                       </div>
@@ -171,13 +195,13 @@ const Navbar = () => {
               link.hasDropdown ? (
                 <div key={link.href}>
                   <button
-                    onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
+                    onClick={() => link.type === 'services' ? setMobileServicesOpen(!mobileServicesOpen) : setMobileConsultancyOpen(!mobileConsultancyOpen)}
                     className="flex items-center justify-between w-full px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
                   >
                     <span>{link.label}</span>
-                    <ChevronDown className={`h-4 w-4 transition-transform ${mobileServicesOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`h-4 w-4 transition-transform ${(link.type === 'services' && mobileServicesOpen) || (link.type === 'consultancy' && mobileConsultancyOpen) ? 'rotate-180' : ''}`} />
                   </button>
-                  {mobileServicesOpen && (
+                  {link.type === 'services' && mobileServicesOpen && (
                     <div className="pl-4 space-y-1">
                       {servicesData.map((service) => (
                         <a
@@ -195,6 +219,25 @@ const Navbar = () => {
                             <service.icon className="h-4 w-4" />
                             <span>{service.title}</span>
                           </div>
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                  {link.type === 'consultancy' && mobileConsultancyOpen && (
+                    <div className="pl-4 space-y-1">
+                      {consultancyAreas.map((area) => (
+                        <a
+                          key={area.id}
+                          href={`/consultancy/${area.slug}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.location.href = `/consultancy/${area.slug}`;
+                            setIsOpen(false);
+                            setMobileConsultancyOpen(false);
+                          }}
+                          className="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+                        >
+                          {area.title}
                         </a>
                       ))}
                     </div>
