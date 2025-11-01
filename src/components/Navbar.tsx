@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { servicesData } from '../data/servicesData';
 import { consultancyAreas } from '../data/consultancyData';
+import { podcastsData } from '../data/podcastsData';
+import { resourcesData } from '../data/resourcesData';
 
 const TYPING_TEXT = 'SIMIYU, OPONDO, KIRANGA & COMPANY ADVOCATES';
 
@@ -41,6 +43,8 @@ const Navbar = () => {
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [consultancyDropdownOpen, setConsultancyDropdownOpen] = useState(false);
   const [mobileConsultancyOpen, setMobileConsultancyOpen] = useState(false);
+  const [newsDropdownOpen, setNewsDropdownOpen] = useState(false);
+  const [mobileNewsOpen, setMobileNewsOpen] = useState(false);
 
   const navLinks = [
     { href: '#home', label: 'Home' },
@@ -48,7 +52,7 @@ const Navbar = () => {
     { href: '#services', label: 'Legal Services', hasDropdown: true, type: 'services' },
     { href: '/consultancy', label: 'Consultancy', hasDropdown: true, type: 'consultancy' },
     { href: '#team', label: 'Team' },
-    { href: '#news', label: 'News' },
+    { href: '#news', label: 'News', hasDropdown: true, type: 'news' },
     { href: '#contact', label: 'Contact' },
   ];
 
@@ -99,8 +103,16 @@ const Navbar = () => {
                   <div
                     key={link.href}
                     className="relative"
-                    onMouseEnter={() => link.type === 'services' ? setServicesDropdownOpen(true) : setConsultancyDropdownOpen(true)}
-                    onMouseLeave={() => link.type === 'services' ? setServicesDropdownOpen(false) : setConsultancyDropdownOpen(false)}
+                    onMouseEnter={() => {
+                      if (link.type === 'services') setServicesDropdownOpen(true);
+                      else if (link.type === 'consultancy') setConsultancyDropdownOpen(true);
+                      else if (link.type === 'news') setNewsDropdownOpen(true);
+                    }}
+                    onMouseLeave={() => {
+                      if (link.type === 'services') setServicesDropdownOpen(false);
+                      else if (link.type === 'consultancy') setConsultancyDropdownOpen(false);
+                      else if (link.type === 'news') setNewsDropdownOpen(false);
+                    }}
                   >
                     <button
                       onClick={(e) => {
@@ -155,6 +167,40 @@ const Navbar = () => {
                         ))}
                       </div>
                     )}
+                    {link.type === 'news' && newsDropdownOpen && (
+                      <div className="absolute top-full left-0 mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                        <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase">Podcasts</div>
+                        {podcastsData.map((podcast) => (
+                          <a
+                            key={podcast.id}
+                            href={`/podcasts/${podcast.slug}`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              window.location.href = `/podcasts/${podcast.slug}`;
+                              setNewsDropdownOpen(false);
+                            }}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                          >
+                            {podcast.title}
+                          </a>
+                        ))}
+                        <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase border-t mt-2">Resources</div>
+                        {resourcesData.map((resource) => (
+                          <a
+                            key={resource.id}
+                            href={`/resources/${resource.slug}`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              window.location.href = `/resources/${resource.slug}`;
+                              setNewsDropdownOpen(false);
+                            }}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                          >
+                            {resource.title}
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <a
@@ -195,11 +241,15 @@ const Navbar = () => {
               link.hasDropdown ? (
                 <div key={link.href}>
                   <button
-                    onClick={() => link.type === 'services' ? setMobileServicesOpen(!mobileServicesOpen) : setMobileConsultancyOpen(!mobileConsultancyOpen)}
+                    onClick={() => {
+                      if (link.type === 'services') setMobileServicesOpen(!mobileServicesOpen);
+                      else if (link.type === 'consultancy') setMobileConsultancyOpen(!mobileConsultancyOpen);
+                      else if (link.type === 'news') setMobileNewsOpen(!mobileNewsOpen);
+                    }}
                     className="flex items-center justify-between w-full px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
                   >
                     <span>{link.label}</span>
-                    <ChevronDown className={`h-4 w-4 transition-transform ${(link.type === 'services' && mobileServicesOpen) || (link.type === 'consultancy' && mobileConsultancyOpen) ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`h-4 w-4 transition-transform ${(link.type === 'services' && mobileServicesOpen) || (link.type === 'consultancy' && mobileConsultancyOpen) || (link.type === 'news' && mobileNewsOpen) ? 'rotate-180' : ''}`} />
                   </button>
                   {link.type === 'services' && mobileServicesOpen && (
                     <div className="pl-4 space-y-1">
@@ -238,6 +288,42 @@ const Navbar = () => {
                           className="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50"
                         >
                           {area.title}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                  {link.type === 'news' && mobileNewsOpen && (
+                    <div className="pl-4 space-y-1">
+                      <div className="px-3 py-1 text-xs font-semibold text-gray-500 uppercase">Podcasts</div>
+                      {podcastsData.map((podcast) => (
+                        <a
+                          key={podcast.id}
+                          href={`/podcasts/${podcast.slug}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.location.href = `/podcasts/${podcast.slug}`;
+                            setIsOpen(false);
+                            setMobileNewsOpen(false);
+                          }}
+                          className="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+                        >
+                          {podcast.title}
+                        </a>
+                      ))}
+                      <div className="px-3 py-1 text-xs font-semibold text-gray-500 uppercase border-t mt-2">Resources</div>
+                      {resourcesData.map((resource) => (
+                        <a
+                          key={resource.id}
+                          href={`/resources/${resource.slug}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.location.href = `/resources/${resource.slug}`;
+                            setIsOpen(false);
+                            setMobileNewsOpen(false);
+                          }}
+                          className="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+                        >
+                          {resource.title}
                         </a>
                       ))}
                     </div>

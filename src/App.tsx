@@ -6,6 +6,8 @@ import ServiceDetailPage from './pages/ServiceDetailPage';
 import TeamPage from './pages/TeamPage';
 import BlogPostPage from './pages/BlogPostPage';
 import ConsultancyDetailPage from './pages/ConsultancyDetailPage';
+import PodcastDetailPage from './pages/PodcastDetailPage';
+import ResourceDetailPage from './pages/ResourceDetailPage';
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
         <Route path="/team" element={<TeamPage />} />
         <Route path="/blog/:postId" element={<BlogPostPage />} />
         <Route path="/consultancy/:slug" element={<ConsultancyDetailPage />} />
+        <Route path="/podcasts/:slug" element={<PodcastDetailPage />} />
+        <Route path="/resources/:slug" element={<ResourceDetailPage />} />
       </Routes>
     </div>
   );
